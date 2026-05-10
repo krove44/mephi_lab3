@@ -72,3 +72,64 @@ TEST(Vector, Norm) {
     Vector<int> va(std::span<int>(a, 2));
     EXPECT_DOUBLE_EQ(va.norm(), 5.0);
 }
+
+TEST(Vector, NormComplex) {
+    std::complex<double> a[] = {{3.0, 4.0}};
+    Vector<std::complex<double>> va(std::span<std::complex<double>>(a, 1));
+    EXPECT_DOUBLE_EQ(va.norm(), 5.0);
+}
+
+TEST(Vector, DotProduct) {
+    int a[] = {1, 2, 3};
+    int b[] = {4, 5, 6};
+    Vector<int> va(std::span<int>(a, 3));
+    Vector<int> vb(std::span<int>(b, 3));
+    EXPECT_EQ(va.dot(vb), 32);
+}
+
+TEST(Vector, DotProductSizeMismatch) {
+    int a[] = {1, 2, 3};
+    int b[] = {1, 2};
+    Vector<int> va(std::span<int>(a, 3));
+    Vector<int> vb(std::span<int>(b, 2));
+    EXPECT_THROW(va.dot(vb), SizeMismatchException);
+}
+
+TEST(Vector, Equality) {
+    int a[] = {1, 2, 3};
+    Vector<int> va(std::span<int>(a, 3));
+    Vector<int> vb(std::span<int>(a, 3));
+    EXPECT_TRUE(va == vb);
+}
+
+TEST(Vector, InequalityDifferentValues) {
+    int a[] = {1, 2, 3};
+    int b[] = {1, 2, 4};
+    Vector<int> va(std::span<int>(a, 3));
+    Vector<int> vb(std::span<int>(b, 3));
+    EXPECT_FALSE(va == vb);
+}
+
+TEST(Vector, InequalityDifferentSizes) {
+    int a[] = {1, 2, 3};
+    int b[] = {1, 2};
+    Vector<int> va(std::span<int>(a, 3));
+    Vector<int> vb(std::span<int>(b, 2));
+    EXPECT_FALSE(va == vb);
+}
+
+TEST(Vector, SelfEquality) {
+    int a[] = {1, 2, 3};
+    Vector<int> va(std::span<int>(a, 3));
+    EXPECT_TRUE(va == va);
+}
+
+TEST(Vector, DoubleAddition) {
+    double a[] = {1.5, 2.5};
+    double b[] = {0.5, 1.5};
+    Vector<double> va(std::span<double>(a, 2));
+    Vector<double> vb(std::span<double>(b, 2));
+    Vector<double> result = va + vb;
+    EXPECT_DOUBLE_EQ(result[0], 2.0);
+    EXPECT_DOUBLE_EQ(result[1], 4.0);
+}

@@ -131,7 +131,7 @@ public:
         return sp_[index];
     }
 
-    bool operator==(const Vector<T>& other){
+    bool operator==(const Vector<T>& other) const {
         if (this == &other) {
             return true;
         }
