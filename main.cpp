@@ -10,5 +10,6 @@ int main() {
     for (auto& i : sum){
         std::cout << i << " ";
     }
+    std::cout << sp;
     return 0;
 }
