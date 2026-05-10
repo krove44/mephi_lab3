@@ -1,8 +1,8 @@
 #pragma once
-#include "submodule/DynamicArray.h"
+#include "../submodule/DynamicArray.h"
 #include <cstddef>
 #include <utility>
-#include "Exception.h"
+#include "../Exception/VectorException.h"
 #include "span"
 
 
