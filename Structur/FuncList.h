@@ -1,6 +1,8 @@
 #pragma once
+#include <cstddef>
 #include <memory>
 #include <iostream>
+#include "../Exception/FuncListException.h"
 
 template<typename T>
 class FuncList {
@@ -24,10 +26,16 @@ public:
     }
 
     T head() const {
+        if(root_ == nullptr){
+            throw FuncListEmpthy();
+        }
         return root_->head;
     }
 
     FuncList tail() const {
+        if(root_ == nullptr){
+            throw FuncListEmpthy();
+        }
         return FuncList(root_->tail, size_ - 1);
     }
 

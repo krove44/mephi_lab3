@@ -3,9 +3,6 @@
 
 int main() {
     FuncList<int> sp;
-    FuncList<int> sp1 = sp.prepend(10);
-    sp = sp.prepend(11);
-    std::cout << sp << std::endl;
-    std::cout << sp1;
+    std::cout << sp.head() << std::endl;
     return 0;
 }
