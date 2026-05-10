@@ -133,3 +133,84 @@ TEST(Vector, DoubleAddition) {
     EXPECT_DOUBLE_EQ(result[0], 2.0);
     EXPECT_DOUBLE_EQ(result[1], 4.0);
 }
+
+
+TEST(Vector, Map) {
+    int a[] = {1, 2, 3};
+    Vector<int> va(std::span<int>(a, 3));
+    Vector<int> result = va.map([](int x) { return x * 2; });
+    EXPECT_EQ(result[0], 2);
+    EXPECT_EQ(result[1], 4);
+    EXPECT_EQ(result[2], 6);
+}
+
+TEST(Vector, MapDouble) {
+    double a[] = {1.0, 2.0, 3.0};
+    Vector<double> va(std::span<double>(a, 3));
+    Vector<double> result = va.map([](double x) { return x * x; });
+    EXPECT_DOUBLE_EQ(result[0], 1.0);
+    EXPECT_DOUBLE_EQ(result[1], 4.0);
+    EXPECT_DOUBLE_EQ(result[2], 9.0);
+}
+
+TEST(Vector, MapEmpty) {
+    Vector<int> va;
+    Vector<int> result = va.map([](int x) { return x * 2; });
+    EXPECT_EQ(result.size(), 0);
+}
+
+TEST(Vector, Where) {
+    int a[] = {1, 2, 3, 4, 5};
+    Vector<int> va(std::span<int>(a, 5));
+    Vector<int> result = va.where([](int x) { return x % 2 == 0; });
+    EXPECT_EQ(result.size(), 2);
+    EXPECT_EQ(result[0], 2);
+    EXPECT_EQ(result[1], 4);
+}
+
+TEST(Vector, WhereNoneMatch) {
+    int a[] = {1, 3, 5};
+    Vector<int> va(std::span<int>(a, 3));
+    Vector<int> result = va.where([](int x) { return x % 2 == 0; });
+    EXPECT_EQ(result.size(), 0);
+}
+
+TEST(Vector, WhereAllMatch) {
+    int a[] = {2, 4, 6};
+    Vector<int> va(std::span<int>(a, 3));
+    Vector<int> result = va.where([](int x) { return x % 2 == 0; });
+    EXPECT_EQ(result.size(), 3);
+}
+
+TEST(Vector, WhereEmpty) {
+    Vector<int> va;
+    Vector<int> result = va.where([](int x) { return x % 2 == 0; });
+    EXPECT_EQ(result.size(), 0);
+}
+
+TEST(Vector, Reduce) {
+    int a[] = {1, 2, 3};
+    Vector<int> va(std::span<int>(a, 3));
+    int result = va.reduce([](int x, int w) { return x + w; }, 0);
+    EXPECT_EQ(result, 6);
+}
+
+TEST(Vector, ReduceWithStart) {
+    int a[] = {1, 2, 3};
+    Vector<int> va(std::span<int>(a, 3));
+    int result = va.reduce([](int x, int w) { return x + w; }, 10);
+    EXPECT_EQ(result, 16);
+}
+
+TEST(Vector, ReduceMultiply) {
+    int a[] = {1, 2, 3, 4};
+    Vector<int> va(std::span<int>(a, 4));
+    int result = va.reduce([](int x, int w) { return x * w; }, 1);
+    EXPECT_EQ(result, 24);
+}
+
+TEST(Vector, ReduceEmpty) {
+    Vector<int> va;
+    int result = va.reduce([](int x, int w) { return x + w; }, 42);
+    EXPECT_EQ(result, 42);
+}

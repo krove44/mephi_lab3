@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <iostream>
 #include "Structur/vector.h"
 #include "span"
@@ -5,11 +6,7 @@
 int main() {
     int data[] = {1, 2, 3};
     Vector<int> sp(std::span(data, 3));
-    Vector<int> sp1(std::span(data, 3));
-    Vector<int> sum = sp + sp1;
-    for (auto& i : sum){
-        std::cout << i << " ";
-    }
-    std::cout << sp;
+    int res = sp.reduce([](int x, int z){return x + z;}, 10);
+    std::cout << res;
     return 0;
 }

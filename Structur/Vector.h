@@ -166,6 +166,37 @@ public:
         return new_vector;
     };
 
+    template<typename F>
+    Vector<T> map(F func) const {
+        size_t j = 0;
+        Vector<T> res(size_);
+        for (T& i : *this) {
+            res[j++] = func(i);
+        }
+        return res;
+    };
+
+    template<typename F>
+    Vector<T> where(F func) const {
+        Vector<T> res;
+        size_t j = 0;
+        for (T& i : *this) {
+            if (func(i)) {
+                res.push_back(i);
+            }
+        }
+        return res;
+    };
+
+    template<typename F>
+    T reduce(F func, T start) const {
+        T ans = start;
+        for (T& i : *this) {
+            ans = func(i, ans);
+        }
+        return ans;
+    };
+
 };
 
 template<typename T>
