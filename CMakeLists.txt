@@ -19,6 +19,7 @@ FetchContent_MakeAvailable(googletest)
 
 add_executable(tests
     tests/VectorTests.cpp
+    tests/FuncListTests.cpp
 )
 
 target_link_libraries(tests PRIVATE gtest gtest_main)
