@@ -3,6 +3,7 @@
 
 int main() {
     FuncList<int> sp;
-    std::cout << sp.head() << std::endl;
+    sp = sp.prepend(1).prepend(2).prepend(3);
+    std::cout << sp.reduce([](int x, int z){return x + z;}, 0) << std::endl;
     return 0;
 }

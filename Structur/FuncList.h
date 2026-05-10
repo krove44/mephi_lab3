@@ -53,6 +53,26 @@ public:
         };
         return tail().concat(other).prepend(head());
     }
+
+    template<typename F>
+    FuncList map(F func) const {
+        if (empty()) return FuncList();
+        return tail().map(func).prepend(func(head()));
+    }
+
+    template<typename F>
+    FuncList where(F func) const {
+        if (empty()) return FuncList();
+        FuncList res = tail().where(func);
+        if (func(head())) return res.prepend(head());
+        return res;
+    }
+
+    template<typename F>
+    T reduce(F func, T start) const {
+        if (empty()) return start;
+        return tail().reduce(func, func(head(), start));
+    }
 };
 
 template<typename T>
