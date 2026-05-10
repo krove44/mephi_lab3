@@ -98,3 +98,95 @@ TEST(FuncList, Double) {
     EXPECT_DOUBLE_EQ(list.head(), 1.5);
     EXPECT_DOUBLE_EQ(list.tail().head(), 2.5);
 }
+
+TEST(FuncList, Map) {
+    FuncList<int> list;
+    list = list.prepend(3).prepend(2).prepend(1);
+    FuncList<int> result = list.map([](int x) { return x * 2; });
+    EXPECT_EQ(result.head(), 2);
+    EXPECT_EQ(result.tail().head(), 4);
+    EXPECT_EQ(result.tail().tail().head(), 6);
+}
+
+TEST(FuncList, MapEmpty) {
+    FuncList<int> list;
+    FuncList<int> result = list.map([](int x) { return x * 2; });
+    EXPECT_TRUE(result.empty());
+}
+
+TEST(FuncList, MapDoesNotMutate) {
+    FuncList<int> list;
+    list = list.prepend(1);
+    list.map([](int x) { return x * 2; });
+    EXPECT_EQ(list.head(), 1);
+}
+
+TEST(FuncList, Where) {
+    FuncList<int> list;
+    list = list.prepend(5).prepend(4).prepend(3).prepend(2).prepend(1);
+    FuncList<int> result = list.where([](int x) { return x % 2 == 0; });
+    EXPECT_EQ(result.size(), 2);
+    EXPECT_EQ(result.head(), 2);
+    EXPECT_EQ(result.tail().head(), 4);
+}
+
+TEST(FuncList, WhereNoneMatch) {
+    FuncList<int> list;
+    list = list.prepend(3).prepend(1);
+    FuncList<int> result = list.where([](int x) { return x % 2 == 0; });
+    EXPECT_TRUE(result.empty());
+}
+
+TEST(FuncList, WhereAllMatch) {
+    FuncList<int> list;
+    list = list.prepend(4).prepend(2);
+    FuncList<int> result = list.where([](int x) { return x % 2 == 0; });
+    EXPECT_EQ(result.size(), 2);
+}
+
+TEST(FuncList, WhereEmpty) {
+    FuncList<int> list;
+    FuncList<int> result = list.where([](int x) { return x % 2 == 0; });
+    EXPECT_TRUE(result.empty());
+}
+
+TEST(FuncList, WhereDoesNotMutate) {
+    FuncList<int> list;
+    list = list.prepend(2).prepend(1);
+    list.where([](int x) { return x % 2 == 0; });
+    EXPECT_EQ(list.size(), 2);
+}
+
+TEST(FuncList, ReduceSum) {
+    FuncList<int> list;
+    list = list.prepend(3).prepend(2).prepend(1);
+    int result = list.reduce([](int x, int w) { return x + w; }, 0);
+    EXPECT_EQ(result, 6);
+}
+
+TEST(FuncList, ReduceWithStart) {
+    FuncList<int> list;
+    list = list.prepend(3).prepend(2).prepend(1);
+    int result = list.reduce([](int x, int w) { return x + w; }, 10);
+    EXPECT_EQ(result, 16);
+}
+
+TEST(FuncList, ReduceMultiply) {
+    FuncList<int> list;
+    list = list.prepend(4).prepend(3).prepend(2).prepend(1);
+    int result = list.reduce([](int x, int w) { return x * w; }, 1);
+    EXPECT_EQ(result, 24);
+}
+
+TEST(FuncList, ReduceEmpty) {
+    FuncList<int> list;
+    int result = list.reduce([](int x, int w) { return x + w; }, 42);
+    EXPECT_EQ(result, 42);
+}
+
+TEST(FuncList, ReduceDoesNotMutate) {
+    FuncList<int> list;
+    list = list.prepend(1);
+    list.reduce([](int x, int w) { return x + w; }, 0);
+    EXPECT_EQ(list.size(), 1);
+}
