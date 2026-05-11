@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <format>
 
 class VectorException : public std::exception {
 private:
@@ -15,13 +16,11 @@ public:
 class SizeMismatchException : public VectorException {
 public:
     SizeMismatchException(size_t a, size_t b) 
-        : VectorException("Vector size mismatch: " + 
-                          std::to_string(a) + " != " + std::to_string(b)) {}
+        : VectorException(std::format("Vector size mismatch: {} != {}", a, b)) {}
 };
 
 class IndexOutOfRangeException : public VectorException {
 public:
     explicit IndexOutOfRangeException(size_t index, size_t size)
-        : VectorException("Index " + std::to_string(index) + 
-                          " out of range [0, " + std::to_string(size-1) + "]") {}
+        : VectorException(std::format("Index {} out of range [0, {}]", index, size-1)) {}
 };
