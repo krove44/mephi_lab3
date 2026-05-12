@@ -64,7 +64,7 @@ double PromptDouble(const std::string& label) {
     }
 }
 
-void ShowTrajectoryPoints(const ArraySequence<Vec<ArraySequence, double>>& traj) {
+void ShowTrajectoryPoints(const ListSequence<Vec<ArraySequence, double>>& traj) {
     int scroll = 0;
     int rows, cols;
     getmaxyx(stdscr, rows, cols);
@@ -75,16 +75,14 @@ void ShowTrajectoryPoints(const ArraySequence<Vec<ArraySequence, double>>& traj)
     while (true) {
         clear();
         mvprintw(1, 2, "Trajectory points (%d total). Up/Down to scroll, Q to exit", total);
-        mvprintw(2, 2, "%-6s %-14s %-14s", "Step", "x (m)", "y (m)");
+        mvprintw(2, 2, "%-6s %-8s %-8s", "Step", "x (m)", "y (m)");
 
         for (int i = 0; i < visible && (scroll + i) < total; ++i) {
             int idx = scroll + i;
             const auto& pt = traj.Get(idx);
-            std::ostringstream line;
-            line << std::setw(6) << idx
-                 << std::setw(8) << std::fixed << std::setprecision(3) << pt[0]
-                 << std::setw(8) << std::fixed << std::setprecision(3) << pt[1];
-            mvprintw(3 + i, 2, "%s", line.str().c_str());
+            mvprintw(3 + i, 2,  "%-6d", idx);
+            mvprintw(3 + i, 9, "%-10.3f", pt[0]);
+            mvprintw(3 + i, 18, "%-10.3f", pt[1]);
         }
 
         mvprintw(rows - 1, 2, "Scroll: %d/%d", scroll, total);

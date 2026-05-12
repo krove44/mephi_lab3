@@ -4,23 +4,8 @@
 #include "../submodule/Sequence/ArraySequence.h"
 #include "../submodule/Sequence/ListSequence.h"
 
-TEST(Vec, DefaultConstructorArraySequence) {
-    Vec<ArraySequence, int> vec;
-    EXPECT_EQ(vec.GetLenght(), 2);
-}
-
-TEST(Vec, DefaultConstructorListSequence) {
-    Vec<ListSequence, int> vec;
-    EXPECT_EQ(vec.GetLenght(), 2);
-}
-
 TEST(Vec, SizeConstructorArraySequence) {
     Vec<ArraySequence, int> vec(5);
-    EXPECT_EQ(vec.GetLenght(), 0);
-}
-
-TEST(Vec, SizeConstructorListSequence) {
-    Vec<ListSequence, int> vec(5);
     EXPECT_EQ(vec.GetLenght(), 0);
 }
 

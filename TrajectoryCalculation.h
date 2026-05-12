@@ -2,6 +2,7 @@
 #include <cmath>
 #include <optional>
 #include "submodule/Sequence/ArraySequence.h"
+#include "submodule/Sequence/ListSequence.h"
 #include "Structur/Vector.h"
 #include <numbers>
 
@@ -80,8 +81,8 @@ inline double minV0ForRange(double x) {
 }
 
 
-inline ArraySequence<Vec<ArraySequence, double>> generateTrajectory(double v0, double angle, double dt = 0.01) {
-    ArraySequence<Vec<ArraySequence, double>> trajectory;
+inline ListSequence<Vec<ArraySequence, double>> generateTrajectory(double v0, double angle, double dt = 0.01) {
+    ListSequence<Vec<ArraySequence, double>> trajectory;
     double vx = v0 * std::cos(angle);
     double vy = v0 * std::sin(angle);
     double t_flight = 2.0 * vy / G;

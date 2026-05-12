@@ -27,10 +27,7 @@ class Vec {
 private:
     Container<T> data_;
 public:
-    Vec() : data_(2) {
-        data_.Append(T{});
-        data_.Append(T{});
-    };
+    Vec() = delete;
     explicit Vec(const Container<T>& c) : data_(c) {};
     Vec(size_t size) : data_(size){};
 
