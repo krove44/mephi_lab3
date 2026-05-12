@@ -89,7 +89,7 @@ public:
     };
 
     double norm() const {
-        return std::sqrt((double)dot(*this));
+        return std::sqrt(static_cast<double>(dot(*this)));
     }  
 
 

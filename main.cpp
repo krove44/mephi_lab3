@@ -1,18 +1,16 @@
 #include <iostream>
-#include <span>
-#include "submodule/Sequence/ArraySequence.h"
-#include "Structur/Vector.h"
+#include "TrajectoryCalculation.h"
+
 
 int main() {
-    int data[] = {1, 2, 3};
-    ArraySequence<int> ase(std::span(data, 3));
-    Vec<ArraySequence, int> sp(ase);
-    Vec<ArraySequence, int> qqq = 3*sp;
-    for(size_t i = 0; i < qqq.GetLenght(); i++){
-        std::cout << qqq[i] << " ";
+    auto result = solve(10.0, 10.0, 70.0, 100.0, 5.0);
+    if (result) {
+        std::cout << "v0 = " << result->v0 << std::endl;
+        std::cout << "angle = " << result->angle * 180.0 / PI << " deg" << std::endl;
+        std::cout << "range = " << result->range << " m" << std::endl;
+    } 
+    else {
+        std::cout << "No solution" << std::endl;
     }
-    std::cout << std::endl;
-    std::cout << sp.norm() << std::endl;
-    std::cout << sp.dot(sp) << std::endl;
     return 0;
 }
