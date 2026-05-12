@@ -4,6 +4,8 @@
 #include <utility>
 #include "../Exception/VectorException.h"
 #include <cmath>
+#include <span>
+#include <complex.h>
 
 template<typename T>
 concept number = requires (T t) {
@@ -30,6 +32,11 @@ public:
     Vec() = delete;
     explicit Vec(const Container<T>& c) : data_(c) {};
     Vec(size_t size) : data_(size){};
+    Vec(std::span<const T> data) {
+        for (size_t i = 0; i < data.size(); i++) {
+            data_.Append(data[i]);
+        }
+    };
 
     Vec operator+(const Vec& other) const {
         if (data_.GetLenght() != other.data_.GetLenght()) {
@@ -88,8 +95,12 @@ public:
         return result;
     };
 
-    double norm() const {
-        return std::sqrt(static_cast<double>(dot(*this)));
+    auto norm() const {
+        double result = 0.0;
+        for (size_t i = 0; i < data_.GetLenght(); ++i) {
+            result += std::abs(data_[i]) * std::abs(data_[i]);
+        }
+        return std::sqrt(result);
     }  
 
     Container<std::pair<T,T>> zip(const Container<T>& a, const Container<T>& b) const {
