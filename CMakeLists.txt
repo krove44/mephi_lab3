@@ -26,6 +26,17 @@ set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 # include(GoogleTest)
 # gtest_discover_tests(tests)
 
-add_executable(main
+set(PDCURSES_DIR "C:/Users/krove44/Desktop/PDCurses-3.9")
+
+add_executable(ui
     main.cpp
+)
+
+target_include_directories(ui PRIVATE
+    ${PDCURSES_DIR}
+)
+
+target_link_libraries(ui PRIVATE
+    ${PDCURSES_DIR}/wincon/pdcurses.a
+    -lwinmm
 )
