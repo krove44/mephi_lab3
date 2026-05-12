@@ -9,7 +9,7 @@ TEST(Vec, SizeConstructorArraySequence) {
     EXPECT_EQ(vec.GetLenght(), 0);
 }
 
-TEST(Vec, CopyConstructor) {
+TEST(Vec, CopyConstructorArraySequence) {
     int arr[] = {1, 2, 3};
     Vec<ArraySequence, int> vec(std::span<int>(arr, 3));
     Vec<ArraySequence, int> copy(vec);
@@ -17,8 +17,15 @@ TEST(Vec, CopyConstructor) {
     EXPECT_EQ(copy[0], 1);
 }
 
+TEST(Vec, CopyConstructorListSequence) {
+    int arr[] = {1, 2, 3};
+    Vec<ListSequence, int> vec(std::span<int>(arr, 3));
+    Vec<ListSequence, int> copy(vec);
+    EXPECT_EQ(copy.GetLenght(), 3);
+    EXPECT_EQ(copy[0], 1);
+}
 
-TEST(Vec, AdditionInt) {
+TEST(Vec, AdditionIntArraySequence) {
     int a[] = {1, 2, 3};
     int b[] = {4, 5, 6};
     Vec<ArraySequence, int> va(std::span<int>(a, 3));
@@ -29,7 +36,18 @@ TEST(Vec, AdditionInt) {
     EXPECT_EQ(result[2], 9);
 }
 
-TEST(Vec, AdditionSizeMismatch) {
+TEST(Vec, AdditionIntListSequence) {
+    int a[] = {1, 2, 3};
+    int b[] = {4, 5, 6};
+    Vec<ListSequence, int> va(std::span<int>(a, 3));
+    Vec<ListSequence, int> vb(std::span<int>(b, 3));
+    Vec<ListSequence, int> result = va + vb;
+    EXPECT_EQ(result[0], 5);
+    EXPECT_EQ(result[1], 7);
+    EXPECT_EQ(result[2], 9);
+}
+
+TEST(Vec, AdditionSizeMismatchArraySequence) {
     int a[] = {1, 2, 3};
     int b[] = {1, 2};
     Vec<ArraySequence, int> va(std::span<int>(a, 3));
@@ -37,7 +55,15 @@ TEST(Vec, AdditionSizeMismatch) {
     EXPECT_THROW(va + vb, SizeMismatchException);
 }
 
-TEST(Vec, ScalarMultiplication) {
+TEST(Vec, AdditionSizeMismatchListSequence) {
+    int a[] = {1, 2, 3};
+    int b[] = {1, 2};
+    Vec<ListSequence, int> va(std::span<int>(a, 3));
+    Vec<ListSequence, int> vb(std::span<int>(b, 2));
+    EXPECT_THROW(va + vb, SizeMismatchException);
+}
+
+TEST(Vec, ScalarMultiplicationArraySequence) {
     int a[] = {1, 2, 3};
     Vec<ArraySequence, int> va(std::span<int>(a, 3));
     Vec<ArraySequence, int> result = va * 3;
@@ -46,150 +72,87 @@ TEST(Vec, ScalarMultiplication) {
     EXPECT_EQ(result[2], 9);
 }
 
-TEST(Vec, Norm) {
+TEST(Vec, ScalarMultiplicationListSequence) {
+    int a[] = {1, 2, 3};
+    Vec<ListSequence, int> va(std::span<int>(a, 3));
+    Vec<ListSequence, int> result = va * 3;
+    EXPECT_EQ(result[0], 3);
+    EXPECT_EQ(result[1], 6);
+    EXPECT_EQ(result[2], 9);
+}
+
+TEST(Vec, NormArraySequence) {
     int a[] = {3, 4};
     Vec<ArraySequence, int> va(std::span<int>(a, 2));
     EXPECT_DOUBLE_EQ(va.norm(), 5.0);
 }
 
-TEST(Vec, NormComplex) {
+TEST(Vec, NormListSequence) {
+    int a[] = {3, 4};
+    Vec<ListSequence, int> va(std::span<int>(a, 2));
+    EXPECT_DOUBLE_EQ(va.norm(), 5.0);
+}
+
+TEST(Vec, NormComplexArraySequence) {
     std::complex<double> a[] = {{3.0, 4.0}};
     Vec<ArraySequence, std::complex<double>> va(std::span<std::complex<double>>(a, 1));
     EXPECT_DOUBLE_EQ(va.norm(), 5.0);
 }
 
-// TEST(Vec, DotProduct) {
-//     int a[] = {1, 2, 3};
-//     int b[] = {4, 5, 6};
-//     Vec<ArraySequence, int> va(std::span<int>(a, 3));
-//     Vec<ArraySequence, int> vb(std::span<int>(b, 3));
-//     EXPECT_EQ(va.dot(vb), 32);
-// }
+TEST(Vec, NormComplexListSequence) {
+    std::complex<double> a[] = {{3.0, 4.0}};
+    Vec<ListSequence, std::complex<double>> va(std::span<std::complex<double>>(a, 1));
+    EXPECT_DOUBLE_EQ(va.norm(), 5.0);
+}
 
-// TEST(Vec, DotProductSizeMismatch) {
-//     int a[] = {1, 2, 3};
-//     int b[] = {1, 2};
-//     Vec<ArraySequence, int> va(std::span<int>(a, 3));
-//     Vec<ArraySequence, int> vb(std::span<int>(b, 2));
-//     EXPECT_THROW(va.dot(vb), SizeMismatchException);
-// }
+TEST(Vec, DotProductArraySequence) {
+    int a[] = {1, 2, 3};
+    int b[] = {4, 5, 6};
+    Vec<ArraySequence, int> va(std::span<int>(a, 3));
+    Vec<ArraySequence, int> vb(std::span<int>(b, 3));
+    EXPECT_EQ(va.dot(vb), 32);
+}
 
-// TEST(Vec, Equality) {
-//     int a[] = {1, 2, 3};
-//     Vec<ArraySequence, int> va(std::span<int>(a, 3));
-//     Vec<ArraySequence, int> vb(std::span<int>(a, 3));
-//     EXPECT_TRUE(va == vb);
-// }
+TEST(Vec, DotProductListSequence) {
+    int a[] = {1, 2, 3};
+    int b[] = {4, 5, 6};
+    Vec<ListSequence, int> va(std::span<int>(a, 3));
+    Vec<ListSequence, int> vb(std::span<int>(b, 3));
+    EXPECT_EQ(va.dot(vb), 32);
+}
 
-// TEST(Vec, InequalityDifferentValues) {
-//     int a[] = {1, 2, 3};
-//     int b[] = {1, 2, 4};
-//     Vec<ArraySequence, int> va(std::span<int>(a, 3));
-//     Vec<ArraySequence, int> vb(std::span<int>(b, 3));
-//     EXPECT_FALSE(va == vb);
-// }
+TEST(Vec, DotProductSizeMismatchArraySequence) {
+    int a[] = {1, 2, 3};
+    int b[] = {1, 2};
+    Vec<ArraySequence, int> va(std::span<int>(a, 3));
+    Vec<ArraySequence, int> vb(std::span<int>(b, 2));
+    EXPECT_THROW(va.dot(vb), SizeMismatchException);
+}
 
-// TEST(Vec, InequalityDifferentSizes) {
-//     int a[] = {1, 2, 3};
-//     int b[] = {1, 2};
-//     Vec<ArraySequence, int> va(std::span<int>(a, 3));
-//     Vec<ArraySequence, int> vb(std::span<int>(b, 2));
-//     EXPECT_FALSE(va == vb);
-// }
+TEST(Vec, DotProductSizeMismatchListSequence) {
+    int a[] = {1, 2, 3};
+    int b[] = {1, 2};
+    Vec<ListSequence, int> va(std::span<int>(a, 3));
+    Vec<ListSequence, int> vb(std::span<int>(b, 2));
+    EXPECT_THROW(va.dot(vb), SizeMismatchException);
+}
 
-// TEST(Vec, SelfEquality) {
-//     int a[] = {1, 2, 3};
-//     Vec<ArraySequence, int> va(std::span<int>(a, 3));
-//     EXPECT_TRUE(va == va);
-// }
+TEST(Vec, DoubleAdditionArraySequence) {
+    double a[] = {1.5, 2.5};
+    double b[] = {0.5, 1.5};
+    Vec<ArraySequence, double> va(std::span<double>(a, 2));
+    Vec<ArraySequence, double> vb(std::span<double>(b, 2));
+    Vec<ArraySequence, double> result = va + vb;
+    EXPECT_DOUBLE_EQ(result[0], 2.0);
+    EXPECT_DOUBLE_EQ(result[1], 4.0);
+}
 
-// TEST(Vec, DoubleAddition) {
-//     double a[] = {1.5, 2.5};
-//     double b[] = {0.5, 1.5};
-//     Vec<double> va(std::span<double>(a, 2));
-//     Vec<double> vb(std::span<double>(b, 2));
-//     Vec<double> result = va + vb;
-//     EXPECT_DOUBLE_EQ(result[0], 2.0);
-//     EXPECT_DOUBLE_EQ(result[1], 4.0);
-// }
-
-
-// TEST(Vec, Map) {
-//     int a[] = {1, 2, 3};
-//     Vec<ArraySequence, int> va(std::span<int>(a, 3));
-//     Vec<ArraySequence, int> result = va.map([](int x) { return x * 2; });
-//     EXPECT_EQ(result[0], 2);
-//     EXPECT_EQ(result[1], 4);
-//     EXPECT_EQ(result[2], 6);
-// }
-
-// TEST(Vec, MapDouble) {
-//     double a[] = {1.0, 2.0, 3.0};
-//     Vec<double> va(std::span<double>(a, 3));
-//     Vec<double> result = va.map([](double x) { return x * x; });
-//     EXPECT_DOUBLE_EQ(result[0], 1.0);
-//     EXPECT_DOUBLE_EQ(result[1], 4.0);
-//     EXPECT_DOUBLE_EQ(result[2], 9.0);
-// }
-
-// TEST(Vec, MapEmpty) {
-//     Vec<ArraySequence, int> va;
-//     Vec<ArraySequence, int> result = va.map([](int x) { return x * 2; });
-//     EXPECT_EQ(result.size(), 0);
-// }
-
-// TEST(Vec, Where) {
-//     int a[] = {1, 2, 3, 4, 5};
-//     Vec<ArraySequence, int> va(std::span<int>(a, 5));
-//     Vec<ArraySequence, int> result = va.where([](int x) { return x % 2 == 0; });
-//     EXPECT_EQ(result.size(), 2);
-//     EXPECT_EQ(result[0], 2);
-//     EXPECT_EQ(result[1], 4);
-// }
-
-// TEST(Vec, WhereNoneMatch) {
-//     int a[] = {1, 3, 5};
-//     Vec<ArraySequence, int> va(std::span<int>(a, 3));
-//     Vec<ArraySequence, int> result = va.where([](int x) { return x % 2 == 0; });
-//     EXPECT_EQ(result.size(), 0);
-// }
-
-// TEST(Vec, WhereAllMatch) {
-//     int a[] = {2, 4, 6};
-//     Vec<ArraySequence, int> va(std::span<int>(a, 3));
-//     Vec<ArraySequence, int> result = va.where([](int x) { return x % 2 == 0; });
-//     EXPECT_EQ(result.size(), 3);
-// }
-
-// TEST(Vec, WhereEmpty) {
-//     Vec<ArraySequence, int> va;
-//     Vec<ArraySequence, int> result = va.where([](int x) { return x % 2 == 0; });
-//     EXPECT_EQ(result.size(), 0);
-// }
-
-// TEST(Vec, Reduce) {
-//     int a[] = {1, 2, 3};
-//     Vec<ArraySequence, int> va(std::span<int>(a, 3));
-//     int result = va.reduce([](int x, int w) { return x + w; }, 0);
-//     EXPECT_EQ(result, 6);
-// }
-
-// TEST(Vec, ReduceWithStart) {
-//     int a[] = {1, 2, 3};
-//     Vec<ArraySequence, int> va(std::span<int>(a, 3));
-//     int result = va.reduce([](int x, int w) { return x + w; }, 10);
-//     EXPECT_EQ(result, 16);
-// }
-
-// TEST(Vec, ReduceMultiply) {
-//     int a[] = {1, 2, 3, 4};
-//     Vec<ArraySequence, int> va(std::span<int>(a, 4));
-//     int result = va.reduce([](int x, int w) { return x * w; }, 1);
-//     EXPECT_EQ(result, 24);
-// }
-
-// TEST(Vec, ReduceEmpty) {
-//     Vec<ArraySequence, int> va;
-//     int result = va.reduce([](int x, int w) { return x + w; }, 42);
-//     EXPECT_EQ(result, 42);
-// }
+TEST(Vec, DoubleAdditionListSequence) {
+    double a[] = {1.5, 2.5};
+    double b[] = {0.5, 1.5};
+    Vec<ListSequence, double> va(std::span<double>(a, 2));
+    Vec<ListSequence, double> vb(std::span<double>(b, 2));
+    Vec<ListSequence, double> result = va + vb;
+    EXPECT_DOUBLE_EQ(result[0], 2.0);
+    EXPECT_DOUBLE_EQ(result[1], 4.0);
+}
