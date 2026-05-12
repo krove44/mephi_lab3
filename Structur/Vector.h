@@ -3,6 +3,7 @@
 #include <concepts>
 #include <utility>
 #include "../Exception/VectorException.h"
+#include <cmath>
 
 template<typename T>
 concept number = requires (T t) {
@@ -40,16 +41,17 @@ public:
         });
         return Vec(sums);
     }
+
     Vec operator-(const Vec& other) const {
         if (data_.GetLenght() != other.data_.GetLenght()) {
             throw SizeMismatchException(data_.GetLenght(), other.data_.GetLenght());
         }
         auto pairs = zip(data_, other.data_);
         auto sums = map(pairs, [](std::pair<T,T> p) {
-            return p.first + p.second;
+            return p.first - p.second;
         });
         return Vec(sums);
-}
+    }
 
     size_t GetLenght() const {
         return data_.GetLenght();
@@ -63,7 +65,7 @@ public:
         return data_[index];
     };
 
-    Vec operator*(const T& scalar) {
+    Vec operator*(const T& scalar) const {
         Vec new_vec(*this);
         for(size_t i = 0; i < new_vec.GetLenght(); i++) {
             new_vec[i]*= scalar;
@@ -71,9 +73,26 @@ public:
         return new_vec;
     };
 
-    T dot(const Vec& other) {
-        
+    friend Vec operator*(T scalar, const Vec& v) {
+        return v * scalar;
+    }
+
+    T dot(const Vec& other) const {
+        if (data_.GetLenght() != other.data_.GetLenght()) {
+            throw SizeMismatchException(data_.GetLenght(), other.data_.GetLenght());
+        }
+        T result = {};
+        for (size_t i = 0; i < data_.GetLenght(); ++i) {
+            result += data_[i] * other.data_[i];
+        }
+        return result;
     };
+
+    double norm() const {
+        return std::sqrt((double)dot(*this));
+    }  
+
+
 
     Container<std::pair<T,T>> zip(const Container<T>& a, const Container<T>& b) const {
         if (a.GetLenght() != b.GetLenght()) {
