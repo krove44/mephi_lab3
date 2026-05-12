@@ -18,11 +18,11 @@ struct TrajectoryResult {
 };
 
 //дальность полёта при заданных v0 и угле
-double computeRange(double v0, double angle) {
+inline double computeRange(double v0, double angle) {
     return (v0 * v0 * std::sin(2.0 * angle)) / G;
 }
 
-std::optional<double> findAngle(double v0, double x1, double x2) {
+inline std::optional<double> findAngle(double v0, double x1, double x2) {
     double lo = 0.0;
     double hi = PI / 4.0;
     double range_lo = 0;
@@ -60,7 +60,7 @@ std::optional<double> findAngle(double v0, double x1, double x2) {
     return std::nullopt;
 }
 
-std::optional<TrajectoryResult> solve(double x1, double x2, double v0_min, double v0_max, double v0_step) {
+inline std::optional<TrajectoryResult> solve(double x1, double x2, double v0_min, double v0_max, double v0_step) {
     for (double v0 = v0_min; v0 <= v0_max; v0 += v0_step) {
         auto angle = findAngle(v0, x1, x2);
         if (angle.has_value()) {
@@ -75,12 +75,12 @@ std::optional<TrajectoryResult> solve(double x1, double x2, double v0_min, doubl
 }
 
 //минимальная v0 для попадания в точку x
-double minV0ForRange(double x) {
+inline double minV0ForRange(double x) {
     return std::sqrt(x * G);
 }
 
 
-ArraySequence<Vec<ArraySequence, double>> generateTrajectory(double v0, double angle, double dt = 0.01) {
+inline ArraySequence<Vec<ArraySequence, double>> generateTrajectory(double v0, double angle, double dt = 0.01) {
     ArraySequence<Vec<ArraySequence, double>> trajectory;
     double vx = v0 * std::cos(angle);
     double vy = v0 * std::sin(angle);
