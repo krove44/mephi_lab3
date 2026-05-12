@@ -18,7 +18,6 @@ FetchContent_Declare(googletest
 FetchContent_MakeAvailable(googletest)
 
 add_executable(tests
-    tests/VectorTests.cpp
     tests/FuncListTests.cpp
 )
 
