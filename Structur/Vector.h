@@ -27,7 +27,10 @@ class Vec {
 private:
     Container<T> data_;
 public:
-    Vec() = delete;
+    Vec() : data_(2) {
+        data_.Append(T{});
+        data_.Append(T{});
+    };
     explicit Vec(const Container<T>& c) : data_(c) {};
     Vec(size_t size) : data_(size){};
 
@@ -91,8 +94,6 @@ public:
     double norm() const {
         return std::sqrt(static_cast<double>(dot(*this)));
     }  
-
-
 
     Container<std::pair<T,T>> zip(const Container<T>& a, const Container<T>& b) const {
         if (a.GetLenght() != b.GetLenght()) {

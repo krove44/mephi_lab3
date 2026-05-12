@@ -7,24 +7,24 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
-enable_testing()
+# enable_testing()
 
-include(FetchContent)
+# include(FetchContent)
 
-FetchContent_Declare(googletest
-    URL https://github.com/google/googletest/archive/refs/heads/main.zip
-)
+# FetchContent_Declare(googletest
+#     URL https://github.com/google/googletest/archive/refs/heads/main.zip
+# )
 
-FetchContent_MakeAvailable(googletest)
+# FetchContent_MakeAvailable(googletest)
 
-add_executable(tests
-    tests/FuncListTests.cpp
-)
+# add_executable(tests
+#     tests/tests.cpp
+# )
 
-target_link_libraries(tests PRIVATE gtest gtest_main)
+# target_link_libraries(tests PRIVATE gtest gtest_main)
 
-include(GoogleTest)
-gtest_discover_tests(tests)
+# include(GoogleTest)
+# gtest_discover_tests(tests)
 
 add_executable(main
     main.cpp

@@ -50,8 +50,7 @@ std::optional<double> findAngle(double v0, double x1, double x2) {
             return mid;
         }
     }
-
-    //проверяем финальное значение
+    
     double mid = (lo + hi) / 2.0;
     double r = computeRange(v0, mid);
     if (r >= x1 && r <= x2) {
@@ -78,4 +77,23 @@ std::optional<TrajectoryResult> solve(double x1, double x2, double v0_min, doubl
 //минимальная v0 для попадания в точку x
 double minV0ForRange(double x) {
     return std::sqrt(x * G);
+}
+
+
+ArraySequence<Vec<ArraySequence, double>> generateTrajectory(double v0, double angle, double dt = 0.01) {
+    ArraySequence<Vec<ArraySequence, double>> trajectory;
+    double vx = v0 * std::cos(angle);
+    double vy = v0 * std::sin(angle);
+    double t_flight = 2.0 * vy / G;
+    
+    for (double t = 0.0; t <= t_flight; t += dt) {
+        double x = vx * t;
+        double y = vy * t - 0.5 * G * t * t;
+    
+        ArraySequence<double> coords;
+        coords.Append(x);
+        coords.Append(y);
+        trajectory.Append(Vec<ArraySequence, double>(coords));
+    }
+    return trajectory;
 }
