@@ -1,11 +1,15 @@
 #pragma once
+#include <algorithm>
 #include <cstddef>
 #include <concepts>
+#include <initializer_list>
 #include <utility>
 #include "../Exception/VectorException.h"
 #include <cmath>
 #include <span>
+#include <ranges>
 #include <complex.h>
+
 
 template<typename T>
 concept number = requires (T t) {
@@ -23,25 +27,35 @@ concept vectorizable = requires (Container c, size_t idx) {
 
 };
 
-template <template <typename> class Container, number T>
+template <template <typename> class Container, number T, size_t DIM>
 requires vectorizable<Container<T>>
 class Vec {
 private:
     Container<T> data_;
+    constexpr static const size_t dim_ = DIM;
 public:
     Vec() = delete;
-    explicit Vec(const Container<T>& c) : data_(c) {};
-    Vec(size_t size) : data_(size){};
+    Vec(const Container<T>& c) : data_(c) {};
+    Vec (Container<T>&& c) : data_(std::move(c)){}
+    Vec (std::initializer_list<T> e) : data_{e}{}
+    explicit Vec(size_t size) : data_(size){};
     Vec(std::span<const T> data) {
         for (size_t i = 0; i < data.size(); i++) {
             data_.Append(data[i]);
         }
     };
 
+
     Vec operator+(const Vec& other) const {
-        if (data_.GetLenght() != other.data_.GetLenght()) {
-            throw SizeMismatchException(data_.GetLenght(), other.data_.GetLenght());
-        }
+        // auto p = std::views::zip(data_, other.data_) ;
+        // for (auto [first, second]: p) {
+        //     std::cout << first << second <<  std::endl;
+        // }
+        // auto p =  std::views::zip(data_, other.data_) | std::ranges::transform([](auto el) {
+        //     auto [first, second] = el;
+        //     return first + second;
+        // });
+        // return Vec(p);
         auto pairs = zip(data_, other.data_);
         auto sums = map(pairs, [](std::pair<T,T> p) {
             return p.first + p.second;
@@ -50,9 +64,6 @@ public:
     }
 
     Vec operator-(const Vec& other) const {
-        if (data_.GetLenght() != other.data_.GetLenght()) {
-            throw SizeMismatchException(data_.GetLenght(), other.data_.GetLenght());
-        }
         auto pairs = zip(data_, other.data_);
         auto sums = map(pairs, [](std::pair<T,T> p) {
             return p.first - p.second;
@@ -80,14 +91,7 @@ public:
         return new_vec;
     };
 
-    friend Vec operator*(T scalar, const Vec& v) {
-        return v * scalar;
-    }
-
     T dot(const Vec& other) const {
-        if (data_.GetLenght() != other.data_.GetLenght()) {
-            throw SizeMismatchException(data_.GetLenght(), other.data_.GetLenght());
-        }
         T result = {};
         for (size_t i = 0; i < data_.GetLenght(); ++i) {
             result += data_[i] * other.data_[i];
@@ -104,10 +108,6 @@ public:
     }  
 
     Container<std::pair<T,T>> zip(const Container<T>& a, const Container<T>& b) const {
-        if (a.GetLenght() != b.GetLenght()) {
-            throw SizeMismatchException(a.GetLenght(), b.GetLenght());
-        }
-
         Container<std::pair<T,T>> result;
         for (size_t i = 0; i < a.GetLenght(); ++i) {
             result.Append({a.Get(i), b.Get(i)});

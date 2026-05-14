@@ -64,7 +64,7 @@ double PromptDouble(const std::string& label) {
     }
 }
 
-void ShowTrajectoryPoints(const ListSequence<Vec<ArraySequence, double>>& traj) {
+void ShowTrajectoryPoints(const ListSequence<Vec<ArraySequence, double, 2>>& traj) {
     int scroll = 0;
     int rows, cols;
     getmaxyx(stdscr, rows, cols);

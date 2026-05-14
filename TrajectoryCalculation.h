@@ -5,12 +5,14 @@
 #include "submodule/Sequence/ListSequence.h"
 #include "Structur/Vector.h"
 #include <numbers>
+#include "Optional.h"
 
 
 constexpr double G = 9.81;
 constexpr double Dif = 1e-6;
 constexpr double PI = std::numbers::pi;
 
+using Vec2d = Vec<ArraySequence, double, 2>;
 
 struct TrajectoryResult {
     double v0;
@@ -23,14 +25,14 @@ inline double computeRange(double v0, double angle) {
     return (v0 * v0 * std::sin(2.0 * angle)) / G;
 }
 
-inline std::optional<double> findAngle(double v0, double x1, double x2) {
+inline Optional<double> findAngle(double v0, double x1, double x2) { /// TODO: own option //// SPLIT IMPLEMENTATION!!!!
     double lo = 0.0;
     double hi = PI / 4.0;
     double range_lo = 0;
     double range_hi = computeRange(v0, hi);
 
     if (range_hi < x1) {
-        return std::nullopt;
+        return Optional<double>();
     }
 
     if (range_hi <= x2) {
@@ -58,10 +60,10 @@ inline std::optional<double> findAngle(double v0, double x1, double x2) {
         return mid;
     }
 
-    return std::nullopt;
+    return Optional<double>();
 }
 
-inline std::optional<TrajectoryResult> solve(double x1, double x2, double v0_min, double v0_max, double v0_step) {
+inline Optional<TrajectoryResult> solve(double x1, double x2, double v0_min, double v0_max, double v0_step) {
     for (double v0 = v0_min; v0 <= v0_max; v0 += v0_step) {
         auto angle = findAngle(v0, x1, x2);
         if (angle.has_value()) {
@@ -72,7 +74,7 @@ inline std::optional<TrajectoryResult> solve(double x1, double x2, double v0_min
             };
         }
     }
-    return std::nullopt;
+    return Optional<TrajectoryResult>();
 }
 
 //минимальная v0 для попадания в точку x
@@ -81,20 +83,23 @@ inline double minV0ForRange(double x) {
 }
 
 
-inline ListSequence<Vec<ArraySequence, double>> generateTrajectory(double v0, double angle, double dt = 0.01) {
-    ListSequence<Vec<ArraySequence, double>> trajectory;
-    double vx = v0 * std::cos(angle);
+inline ListSequence<Vec2d> generateTrajectory(double v0, double angle, double dt = 0.01) {
+    ListSequence<Vec2d> trajectory;
+    double vx = v0 * std::cos(angle); // ROTATE MATRIX
     double vy = v0 * std::sin(angle);
     double t_flight = 2.0 * vy / G;
+    Vec2d pos{0,0}; // TODO: VEC MATH
     
     for (double t = 0.0; t <= t_flight; t += dt) {
+        // pos += vel * dt ;
+    
         double x = vx * t;
         double y = vy * t - 0.5 * G * t * t;
     
         ArraySequence<double> coords;
         coords.Append(x);
         coords.Append(y);
-        trajectory.Append(Vec<ArraySequence, double>(coords));
+        trajectory.Append(Vec2d(coords));
     }
     return trajectory;
 }
