@@ -30,6 +30,7 @@ set(PDCURSES_DIR "C:/Users/krove44/Desktop/PDCurses-3.9")
 
 add_executable(ui
     main.cpp
+    TrajectoryCalculation.cpp
 )
 
 target_include_directories(ui PRIVATE
