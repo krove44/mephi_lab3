@@ -68,15 +68,11 @@ ListSequence<Vec2d> generateTrajectory(double v0, double angle, double dt) {
     Vec2d pos{0,0}; // TODO: VEC MATH
     
     for (double t = 0.0; t <= t_flight; t += dt) {
-        // pos += vel * dt ;
+        // pos += vel * dt;
     
         double x = vx * t;
         double y = vy * t - 0.5 * G * t * t;
-    
-        ArraySequence<double> coords;
-        coords.Append(x);
-        coords.Append(y);
-        trajectory.Append(Vec2d(coords));
+        trajectory.Append(Vec2d({x, y}));
     }
     return trajectory;
 }
