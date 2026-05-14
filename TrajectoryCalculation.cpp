@@ -1,4 +1,13 @@
 #include "TrajectoryCalculation.h"
+#include "submodule/Sequence/ArraySequence.h"
+
+Vec2d rotation(double angle, Vec2d vec)  {
+    double cos = std::cos(angle);
+    double sin = std::sin(angle);
+    Matrix<ArraySequence, double, 2> rotate_matrix = {{cos, -sin}, {sin, cos}};
+    return rotate_matrix*vec;
+    }
+
 
 double computeRange(double v0, double angle) {
     return (v0 * v0 * std::sin(2.0 * angle)) / G;
@@ -62,17 +71,19 @@ double minV0ForRange(double x) {
 
 ListSequence<Vec2d> generateTrajectory(double v0, double angle, double dt) {
     ListSequence<Vec2d> trajectory;
-    double vx = v0 * std::cos(angle); // ROTATE MATRIX
-    double vy = v0 * std::sin(angle);
-    double t_flight = 2.0 * vy / G;
-    Vec2d pos{0,0}; // TODO: VEC MATH
-    
-    for (double t = 0.0; t <= t_flight; t += dt) {
-        // pos += vel * dt;
-    
-        double x = vx * t;
-        double y = vy * t - 0.5 * G * t * t;
-        trajectory.Append(Vec2d({x, y}));
+    Vec2d vec = rotation(angle, Vec2d({v0, 0.0}));
+    FILE* f = fopen("C:/Users/krove44/Desktop/mephi_lab3/build/debug.txt", "w");
+    fprintf(f, "vec length: %d\n", (int)vec.GetLenght());
+    if (vec.GetLenght() >= 2) {
+        fprintf(f, "vec[0]=%f vec[1]=%f\n", vec[0], vec[1]);
+    }
+    fclose(f);
+    Vec2d pos{0.0,0.0};
+    Vec2d gravity{0.0,-G};
+    for (;pos[1] >= 0.0;) {
+        trajectory.Append(pos);
+        vec = vec + gravity*dt;
+        pos = pos + vec*dt;
     }
     return trajectory;
 }

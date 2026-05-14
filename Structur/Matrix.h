@@ -31,11 +31,4 @@ public:
         }
         return Vec<Container, T, Dim>(result);
     }
-
-    Vec<Container, T, Dim> rotation(double angle, Vec<Container, T, Dim> vec) requires (Dim == 2) {
-        T cos = static_cast<T>(std::cos(angle));
-        T sin = static_cast<T>(std::sin(angle));
-        auto rotate_matrix = Matrix({cos, -sin}, {sin, cos});
-        return rotate_matrix*vec;
-    }
 };

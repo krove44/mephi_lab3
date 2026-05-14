@@ -4,6 +4,7 @@
 #include "submodule/Sequence/ListSequence.h"
 #include "Structur/Vector.h"
 #include "Optional.h"
+#include "Structur/Matrix.h"
 
 constexpr double G = 9.81;
 constexpr double Dif = 1e-6;

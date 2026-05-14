@@ -34,7 +34,11 @@ private:
     Container<T> data_;
     constexpr static const size_t dim_ = DIM;
 public:
-    Vec() = delete;
+    Vec() {
+        for (size_t i = 0; i < DIM; i++) {
+            data_.Append(T{});
+        }
+    };
     Vec(const Container<T>& c) : data_(c) {};
     Vec (Container<T>&& c) : data_(std::move(c)){}
     Vec (std::initializer_list<T> e) : data_{e}{}
