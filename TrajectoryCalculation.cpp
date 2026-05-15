@@ -71,12 +71,6 @@ double minV0ForRange(double x) {
 ListSequence<Vec2d> generateTrajectory(double v0, double angle, double dt) {
     ListSequence<Vec2d> trajectory;
     Vec2d vec = rotation(angle, Vec2d({v0, 0.0}));
-    FILE* f = fopen("C:/Users/krove44/Desktop/mephi_lab3/build/debug.txt", "w");
-    fprintf(f, "vec length: %d\n", (int)vec.GetLenght());
-    if (vec.GetLenght() >= 2) {
-        fprintf(f, "vec[0]=%f vec[1]=%f\n", vec[0], vec[1]);
-    }
-    fclose(f);
     Vec2d pos{0.0,0.0};
     Vec2d gravity{0.0,-G};
     for (;pos[1] >= 0.0;) {
