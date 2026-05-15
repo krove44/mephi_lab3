@@ -1,6 +1,7 @@
 #pragma once
-#include <cmath>
+#include <cstddef>
 #include <initializer_list>
+#include <stdexcept>
 #include "Vector.h"
 
 template <template <typename> class Container, number T, size_t Dim>
@@ -10,8 +11,17 @@ private:
     Container<Vec<Container, T, Dim>> data_;
 
 public:
+    Matrix(const Matrix& other) : data_(other.data_) {};
+
     Matrix(std::initializer_list<std::initializer_list<T>> rows) {
+        if(rows.size() != Dim){
+            throw std::invalid_argument("rows.size != Dim");
+        }
+
         for (auto& row : rows) {
+            if (row.size() != Dim){
+                throw std::invalid_argument("rows.size != Dim");
+            }
             data_.Append(Vec<Container, T, Dim>(row));
         }
     }
@@ -30,5 +40,25 @@ public:
             result.Append(data_[i].dot(v));
         }
         return Vec<Container, T, Dim>(result);
+    }
+
+    Matrix operator*(const T& scalar) const {
+        Matrix new_mat(*this);
+        for(size_t i = 0; i < Dim; i++) {
+            for (size_t j =0 ; j < Dim; j++){
+                new_mat[i][j] *= scalar;
+            }
+        };
+        return new_mat;
+    };
+
+    Matrix operator+(const Matrix& other) const {
+        Matrix result(*this);
+        for (size_t i = 0; i < Dim; i++) {
+            for (size_t j = 0; j < Dim; j++) {
+                result[i][j] += other[i][j];
+            }
+        }
+        return result;
     }
 };

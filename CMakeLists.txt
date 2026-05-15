@@ -34,6 +34,10 @@ add_executable(ui
     TrajectoryCalculation.cpp
 )
 
+add_executable(new_main
+    new_main.cpp
+)
+
 target_include_directories(ui PRIVATE
     ${PDCURSES_DIR}
 )

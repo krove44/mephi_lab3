@@ -1,5 +1,4 @@
 #include "TrajectoryCalculation.h"
-#include "submodule/Sequence/ArraySequence.h"
 
 Vec2d rotation(double angle, Vec2d vec)  {
     double cos = std::cos(angle);
