@@ -53,7 +53,9 @@ int main()
         sf::Style::Titlebar | sf::Style::Close
     );
     window.setFramerateLimit(60);
-
+    
+    sf::Clock clock;
+    float animT = 0.f;
     sf::Font font;
     auto check = font.openFromFile("C:/Windows/Fonts/segoeui.ttf");
 
@@ -132,7 +134,7 @@ int main()
     };
     int activeField = -1;
     bool btnPressed = false;
-    std::string statusMsg = "Enter parameters and press Calculate";
+    std::string statusMsg = "";
     sf::Color   statusColor = TEXT_SEC;
 
     CoordMapper cm;
@@ -199,6 +201,11 @@ int main()
     while (window.isOpen())
     {   
         btnPressed = false;
+        float dt_frame = clock.restart().asSeconds();
+        if (hasSolution) {
+            animT += dt_frame * 0.4f;
+            if (animT > 1.f) animT = 0.f;
+        }
         while (const auto ev = window.pollEvent())
         {
             
@@ -258,11 +265,50 @@ int main()
     
         drawRect(CX, CY, CW, CH, {28, 28, 34}, BORDER, 1.f);
 
+        sf::Vertex axX[] = {
+    sf::Vertex(cm.toScreen(0, 0),       sf::Color{70, 70, 85}),
+    sf::Vertex(cm.toScreen(cm.xMax, 0), sf::Color{70, 70, 85})};
+        window.draw(axX, 2, sf::PrimitiveType::Lines);
+
+        float step = cm.xMax / 6.f;
+        for (float v = 0; v <= cm.xMax + 0.1f; v += step) {
+            auto sp = cm.toScreen(v, 0);
+
+            sf::Vertex tick[] = {
+        sf::Vertex(sf::Vector2f{sp.x, sp.y+10 - 3.f}, sf::Color{70, 70, 85}),
+        sf::Vertex(sf::Vector2f{sp.x, sp.y+10 + 3.f}, sf::Color{70, 70, 85})};
+            window.draw(tick, 2, sf::PrimitiveType::Lines);
+
+            std::ostringstream ss;
+            ss << (int)v << "m";
+            drawText(ss.str(), sp.x - 10.f, sp.y - 15.f, 15, sf::Color{130, 130, 145});
+        }
+
         for (auto& t : tries) drawTrajectory(t, cm, TRY_COL);
 
-        if (hasSolution)
+        if (hasSolution) {
             drawTrajectory(solution, cm, ACCENT);
-        drawText(statusMsg, CX + 10.f, WIN_H - 24.f, 12, statusColor);
+            auto fmt = [](double v, int p = 2) {
+                std::ostringstream s;
+                s << std::fixed << std::setprecision(p) << v;
+                return s.str();
+            };
+            float ry = calcBtn.y + 50.f;
+            drawText("v0    = " + fmt(result.v0)                + " m/s", PAD, ry,        18, statusColor);
+            drawText("angle = " + fmt(result.angle*180.0/PI, 1) + " deg", PAD, ry + 18.f, 18, statusColor);
+            drawText("range = " + fmt(result.range, 1)          + " m",   PAD, ry + 36.f, 18, statusColor);
+            int n   = solution.GetLenght();
+            int idx = std::min((int)(animT * n), n - 1);
+
+            auto pt = solution.Get(idx);
+            auto sp = cm.toScreen((float)pt[0], (float)pt[1]);
+
+            sf::CircleShape ball(6.f);
+            ball.setOrigin({6.f, 6.f});
+            ball.setPosition(sp);
+            ball.setFillColor(ACCENT);
+            window.draw(ball);
+        }
         window.display();
     }
 
