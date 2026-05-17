@@ -1,6 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
+#include <iomanip>
+#include "TrajectoryCalculation.h"
 //Основное окно
 static constexpr float WIN_W   = 1280.f;
 static constexpr float WIN_H   =  720.f;
@@ -18,6 +20,7 @@ static const sf::Color BORDER   {60,  60,  72 };
 static const sf::Color TEXT_PRI {220, 220, 225};
 static const sf::Color TEXT_SEC {130, 130, 145};
 static const sf::Color ACCENT   {29,  158, 117};
+static const sf::Color TRY_COL  {110, 110, 125, 110};
 
 struct Field {
     std::string label;
@@ -29,6 +32,17 @@ struct Field {
 struct Button {
     std::string label;
     float x, y, w, h;
+};
+
+struct CoordMapper {
+    float xMax = 120.f;
+    float yMax = 80.f;
+ 
+    sf::Vector2f toScreen(float wx, float wy) const {
+        float px = CX + (wx / xMax) * CW;
+        float py = CY + CH - (wy / yMax) * (CH - 20.f);
+        return {px, py};
+    }
 };
 
 int main()
@@ -86,6 +100,18 @@ int main()
         return sf::FloatRect{{b.x, b.y}, {b.w, b.h}}.contains(mp);
     };
 
+    auto drawTrajectory = [&](const ListSequence<Vec2d>& traj, const CoordMapper& cm, sf::Color color) {
+        int n = traj.GetLenght();
+        if (n < 2) return;
+        sf::VertexArray va(sf::PrimitiveType::LineStrip, n);
+        for (int i = 0; i < n; ++i) {
+            auto p = traj.Get(i);
+            va[i].position = cm.toScreen((float)p[0], (float)p[1]);
+            va[i].color    = color;
+        }
+        window.draw(va);
+    };
+
     float fw = PANEL_W - PAD * 2;
     float fy = 65.f;
     Button calcBtn{"Calculate", PAD, fy + 360, fw, 36.f};
@@ -109,6 +135,67 @@ int main()
     std::string statusMsg = "Enter parameters and press Calculate";
     sf::Color   statusColor = TEXT_SEC;
 
+    CoordMapper cm;
+    std::vector<ListSequence<Vec2d>> tries;
+    ListSequence<Vec2d> solution;
+    bool hasSolution = false;
+    TrajectoryResult result{};
+
+    auto runCalc = [&]() {
+        tries.clear();
+        hasSolution = false;
+        try {
+            double x1    = std::stod(fields[0].value);
+            double x2    = std::stod(fields[1].value);
+            double vmin  = std::stod(fields[2].value);
+            double vmax  = std::stod(fields[3].value);
+            double vstep = std::stod(fields[4].value);
+            double dt    = std::stod(fields[5].value);
+ 
+            if (x1 >= x2 || vmin >= vmax || vstep <= 0 || dt <= 0) {
+                statusMsg   = "Error: check parameters";
+                statusColor = sf::Color{220, 80, 80};
+                return;
+            }
+
+            for (double v0 = vmin; v0 <= vmax; v0 += vstep) {
+                auto ang = findAngle(v0, x1, x2);
+                double a = ang.has_value() ? ang.value() : PI / 4.0;
+                tries.push_back(generateTrajectory(v0, a, dt));
+ 
+                if (ang.has_value()) {
+                    hasSolution = true;
+                    result = {v0, a, computeRange(v0, a)};
+                    solution = tries.back();
+ 
+                    double maxY = 0;
+                    for (int i = 0; i < solution.GetLenght(); ++i)
+                        maxY = std::max(maxY, solution.Get(i)[1]);
+                    cm.xMax = (float)(result.range * 1.15f);
+                    cm.yMax = (float)(maxY > 0 ? maxY * 1.2 : 80);
+ 
+                    std::ostringstream ss;
+                    ss << std::fixed << std::setprecision(2);
+                    ss << "v0=" << result.v0 << " m/s  "
+                       << "angle=" << result.angle * 180.0 / PI << " deg  "
+                       << "range=" << result.range << " m";
+                    statusMsg   = ss.str();
+                    statusColor = ACCENT;
+                    break;
+                }
+            }
+ 
+            if (!hasSolution) {
+                statusMsg   = "No solution found";
+                statusColor = sf::Color{220, 80, 80};
+            }
+ 
+        } catch (...) {
+            statusMsg   = "Error: invalid input";
+            statusColor = sf::Color{220, 80, 80};
+        }
+    };
+
     while (window.isOpen())
     {   
         btnPressed = false;
@@ -126,9 +213,8 @@ int main()
                     if (fields[i].active) activeField = i;
                 }
                 if (btnContains(calcBtn, mp)) {
-                    btnPressed  = true;
-                    statusMsg   = "Button clicked!";
-                    statusColor = ACCENT;
+                    btnPressed = true;
+                    runCalc();
                 }
             }
 
@@ -145,9 +231,8 @@ int main()
                     fields[activeField].active = true;
                 }
                 if (kt->code == sf::Keyboard::Key::Enter) {
-                    btnPressed  = true;
-                    statusMsg   = "Button clicked!";
-                    statusColor = ACCENT;
+                    btnPressed = true;
+                    runCalc();
                 }
             }
 
@@ -170,8 +255,13 @@ int main()
 
         for (auto& f : fields) drawField(f);
         drawButton(calcBtn, btnPressed ? sf::Color{20, 110, 82} : ACCENT);
-
+    
         drawRect(CX, CY, CW, CH, {28, 28, 34}, BORDER, 1.f);
+
+        for (auto& t : tries) drawTrajectory(t, cm, TRY_COL);
+
+        if (hasSolution)
+            drawTrajectory(solution, cm, ACCENT);
         drawText(statusMsg, CX + 10.f, WIN_H - 24.f, 12, statusColor);
         window.display();
     }
