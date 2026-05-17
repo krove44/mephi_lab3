@@ -4,10 +4,8 @@
 #include <concepts>
 #include <initializer_list>
 #include <utility>
-#include "../Exception/VectorException.h"
 #include <cmath>
 #include <span>
-#include <ranges>
 #include <complex.h>
 
 

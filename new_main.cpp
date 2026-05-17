@@ -1,14 +1,22 @@
-#include <iostream>
-#include "submodule/Sequence/ListSequence.h"
-#include "Structur/Matrix.h"
+#include "SFML-3.1.0/include/SFML/Graphics.hpp"
+#include <optional>
 
-int main() {
-    Matrix<ListSequence, int, 3> matrix = {{1, 2, 3}, {3, 4, 3},{1, 2}};
-    Matrix<ListSequence, int, 3> new_matrix = matrix*3;
-    for(size_t i = 0; i < 3; i++){
-        for(size_t j = 0; j < 3; j++){
-            std::cout << new_matrix[i][j] << " ";
+int main()
+{
+    sf::RenderWindow window(sf::VideoMode({200, 200}), "SFML works!");
+    sf::CircleShape shape(100.f);
+    shape.setFillColor(sf::Color::Green);
+    while (window.isOpen())
+    {
+        while (const std::optional event = window.pollEvent())
+        {
+            if (event->is<sf::Event::Closed>())
+                window.close();
         }
+
+        window.clear();
+        window.draw(shape);
+        window.display();
     }
     return 0;
 }

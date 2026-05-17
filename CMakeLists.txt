@@ -4,45 +4,29 @@ project(third_laba)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
 set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
 enable_testing()
 
 include(FetchContent)
-
 FetchContent_Declare(googletest
     URL https://github.com/google/googletest/archive/refs/heads/main.zip
 )
-
 FetchContent_MakeAvailable(googletest)
 
 add_executable(tests
     tests/VectorTests.cpp
     tests/MatrixTests.cpp
 )
-
 target_link_libraries(tests PRIVATE gtest gtest_main)
 
 include(GoogleTest)
 gtest_discover_tests(tests)
 
-set(PDCURSES_DIR "C:/Users/krove44/Desktop/PDCurses-3.9")
-
-add_executable(ui
-    main.cpp
-    TrajectoryCalculation.cpp
-)
+set(SFML_DIR "${CMAKE_SOURCE_DIR}/SFML-3.1.0/lib/cmake/SFML")
+find_package(SFML 3 REQUIRED COMPONENTS Graphics Window System)
 
 add_executable(new_main
     new_main.cpp
 )
-
-target_include_directories(ui PRIVATE
-    ${PDCURSES_DIR}
-)
-
-target_link_libraries(ui PRIVATE
-    ${PDCURSES_DIR}/wincon/pdcurses.a
-    -lwinmm
-)
+target_link_libraries(new_main PRIVATE SFML::Graphics SFML::Window SFML::System)
