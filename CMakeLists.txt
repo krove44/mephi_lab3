@@ -26,7 +26,8 @@ gtest_discover_tests(tests)
 set(SFML_DIR "${CMAKE_SOURCE_DIR}/SFML-3.1.0/lib/cmake/SFML")
 find_package(SFML 3 REQUIRED COMPONENTS Graphics Window System)
 
-add_executable(new_main
+add_executable(new_main 
     new_main.cpp
-)
+    TrajectoryCalculation.cpp
+    )
 target_link_libraries(new_main PRIVATE SFML::Graphics SFML::Window SFML::System)

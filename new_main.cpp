@@ -1,22 +1,25 @@
-#include "SFML-3.1.0/include/SFML/Graphics.hpp"
-#include <optional>
+#include <SFML/Graphics.hpp>
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode({200, 200}), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+    sf::RenderWindow window(
+        sf::VideoMode({1280u, 720u}),
+        "Trajectory Gui",
+        sf::Style::Titlebar | sf::Style::Close
+    );
+    window.setFramerateLimit(60);
+
     while (window.isOpen())
     {
-        while (const std::optional event = window.pollEvent())
+        while (const auto ev = window.pollEvent())
         {
-            if (event->is<sf::Event::Closed>())
+            if (ev->is<sf::Event::Closed>())
                 window.close();
         }
 
-        window.clear();
-        window.draw(shape);
+        window.clear(sf::Color{24, 24, 28});
         window.display();
     }
+
     return 0;
 }
