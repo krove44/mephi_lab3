@@ -26,6 +26,11 @@ struct Field {
     bool active = false;
 };
 
+struct Button {
+    std::string label;
+    float x, y, w, h;
+};
+
 int main()
 {
     sf::RenderWindow window(
@@ -64,8 +69,26 @@ int main()
         drawText(f.value + (f.active ? "|" : ""), f.x + 8.f, f.y + 7.f, 16);
     };
 
+    auto drawButton = [&](const Button& b, sf::Color fill = ACCENT) {
+        drawRect(b.x, b.y, b.w, b.h, fill);
+ 
+        sf::Text t(font, b.label, 14);
+        t.setFillColor(sf::Color::White);
+        auto tb = t.getLocalBounds();
+        t.setPosition({
+            b.x + (b.w - tb.size.x) / 2.f - tb.position.x,
+            b.y + (b.h - tb.size.y) / 2.f - tb.position.y
+        });
+        window.draw(t);
+    };
+ 
+    auto btnContains = [](const Button& b, sf::Vector2f mp) {
+        return sf::FloatRect{{b.x, b.y}, {b.w, b.h}}.contains(mp);
+    };
+
     float fw = PANEL_W - PAD * 2;
     float fy = 65.f;
+    Button calcBtn{"Calculate", PAD, fy + 360, fw, 36.f};
 
     auto makeField = [&](const char* label, const char* def) {
         Field f{label, def, PAD, fy, fw};
@@ -82,11 +105,16 @@ int main()
         makeField("dt (s):",        "0.01"),
     };
     int activeField = -1;
+    bool btnPressed = false;
+    std::string statusMsg = "Enter parameters and press Calculate";
+    sf::Color   statusColor = TEXT_SEC;
 
     while (window.isOpen())
-    {
+    {   
+        btnPressed = false;
         while (const auto ev = window.pollEvent())
         {
+            
             if (ev->is<sf::Event::Closed>()) window.close();
  
             if (const auto* mb = ev->getIf<sf::Event::MouseButtonPressed>()) {
@@ -97,7 +125,14 @@ int main()
                     fields[i].active = rect.contains(mp);
                     if (fields[i].active) activeField = i;
                 }
+                if (btnContains(calcBtn, mp)) {
+                    btnPressed  = true;
+                    statusMsg   = "Button clicked!";
+                    statusColor = ACCENT;
+                }
             }
+
+            
 
             if (const auto* kt = ev->getIf<sf::Event::KeyPressed>()) {
                 if (kt->code == sf::Keyboard::Key::Backspace
@@ -109,6 +144,15 @@ int main()
                     activeField = (activeField + 1) % (int)fields.size();
                     fields[activeField].active = true;
                 }
+                if (kt->code == sf::Keyboard::Key::Enter) {
+                    btnPressed  = true;
+                    statusMsg   = "Button clicked!";
+                    statusColor = ACCENT;
+                }
+            }
+
+            if (const auto* mb = ev->getIf<sf::Event::MouseButtonReleased>()) {
+                btnPressed = false;
             }
  
             if (const auto* tc = ev->getIf<sf::Event::TextEntered>()) {
@@ -125,10 +169,10 @@ int main()
         drawText("Parameters:", PAD, 16.f, 20, TEXT_SEC);
 
         for (auto& f : fields) drawField(f);
+        drawButton(calcBtn, btnPressed ? sf::Color{20, 110, 82} : ACCENT);
 
         drawRect(CX, CY, CW, CH, {28, 28, 34}, BORDER, 1.f);
-        drawText("Graph of moving", CX + 10.f, CY + 10.f, 20, TEXT_SEC);
-
+        drawText(statusMsg, CX + 10.f, WIN_H - 24.f, 12, statusColor);
         window.display();
     }
 
