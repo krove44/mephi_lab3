@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <string>
-#include <vector>
+#include "submodule/Sequence/ArraySequence.h"
 #include <iomanip>
 #include "TrajectoryCalculation.h"
 //Основное окно
@@ -124,7 +124,7 @@ int main()
         return f;
     };
 
-    std::vector<Field> fields = {
+    ArraySequence<Field> fields = {
         makeField("x1 (m):",        "50"),
         makeField("x2 (m):",        "60"),
         makeField("v0 min (m/s):",  "10"),
@@ -138,13 +138,13 @@ int main()
     sf::Color   statusColor = TEXT_SEC;
 
     CoordMapper cm;
-    std::vector<ListSequence<Vec2d>> tries;
+    ArraySequence<ListSequence<Vec2d>> tries;
     ListSequence<Vec2d> solution;
     bool hasSolution = false;
     TrajectoryResult result{};
 
     auto runCalc = [&]() {
-        tries.clear();
+        tries.Clear();
         hasSolution = false;
         try {
             double x1    = std::stod(fields[0].value);
@@ -163,12 +163,12 @@ int main()
             for (double v0 = vmin; v0 <= vmax; v0 += vstep) {
                 auto ang = findAngle(v0, x1, x2);
                 double a = ang.has_value() ? ang.value() : PI / 4.0;
-                tries.push_back(generateTrajectory(v0, a, dt));
+                tries.Append(generateTrajectory(v0, a, dt));
  
                 if (ang.has_value()) {
                     hasSolution = true;
                     result = {v0, a, computeRange(v0, a)};
-                    solution = tries.back();
+                    solution = tries.GetLast();
  
                     double maxY = 0;
                     for (int i = 0; i < solution.GetLenght(); ++i)
@@ -214,7 +214,7 @@ int main()
             if (const auto* mb = ev->getIf<sf::Event::MouseButtonPressed>()) {
                 sf::Vector2f mp((float)mb->position.x, (float)mb->position.y);
                 activeField = -1;
-                for (int i = 0; i < (int)fields.size(); ++i) {
+                for (int i = 0; i < (int)fields.GetLenght(); ++i) {
                     sf::FloatRect rect{{fields[i].x, fields[i].y}, {fields[i].w, 30.f}};
                     fields[i].active = rect.contains(mp);
                     if (fields[i].active) activeField = i;
@@ -234,7 +234,7 @@ int main()
                     fields[activeField].value.pop_back();
                 if (kt->code == sf::Keyboard::Key::Tab && activeField >= 0) {
                     fields[activeField].active = false;
-                    activeField = (activeField + 1) % (int)fields.size();
+                    activeField = (activeField + 1) % (int)fields.GetLenght();
                     fields[activeField].active = true;
                 }
                 if (kt->code == sf::Keyboard::Key::Enter) {
