@@ -1,4 +1,5 @@
 #include "TrajectoryCalculation.h"
+#include "Structur/Vector.h"
 
 Vec2d rotation(double angle, Vec2d vec)  {
     double cos = std::cos(angle);
@@ -11,18 +12,18 @@ Vec2d rotation(double angle, Vec2d vec)  {
 double computeRange(double v0, double angle) {
     return (v0 * v0 * std::sin(2.0 * angle)) / G;
 }
-
-Optional<double> findAngle(double v0, double x1, double x2) {
+//TODO: передовать вектор
+Optional<double> findAngle(double v0, Vec2d vec) {
     double lo = 0.0;
     double hi = PI / 4.0;
     double range_lo = 0;
     double range_hi = computeRange(v0, hi);
 
-    if (range_hi < x1) {
+    if (range_hi < vec[0]) {
         return Optional<double>();
     }
 
-    if (range_hi <= x2) {
+    if (range_hi <= vec[1]) {
         return hi;
     }
 
@@ -30,10 +31,10 @@ Optional<double> findAngle(double v0, double x1, double x2) {
         double mid = (lo + hi) / 2.0;
         double r = computeRange(v0, mid);
 
-        if (r < x1) {
+        if (r < vec[0]) {
             lo = mid;
         } 
-        else if (r > x2) {
+        else if (r > vec[1]) {
             hi = mid;
         } 
         else {
@@ -43,16 +44,16 @@ Optional<double> findAngle(double v0, double x1, double x2) {
     
     double mid = (lo + hi) / 2.0;
     double r = computeRange(v0, mid);
-    if (r >= x1 && r <= x2) {
+    if (r >= vec[0] && r <= vec[1]) {
         return mid;
     }
 
     return Optional<double>();
 }
 
-Optional<TrajectoryResult> solve(double x1, double x2, double v0_min, double v0_max, double v0_step) {
-    for (double v0 = v0_min; v0 <= v0_max; v0 += v0_step) {
-        auto angle = findAngle(v0, x1, x2);
+Optional<TrajectoryResult> solve(Vec2d vec, Vec2d speed, double v0_step) {
+    for (double v0 = vec[0]; v0 <= vec[1]; v0 += v0_step) {
+        auto angle = findAngle(v0, vec);
         if (angle.has_value()) {
             return TrajectoryResult{
                 .v0    = v0,
@@ -75,8 +76,8 @@ ListSequence<Vec2d> generateTrajectory(double v0, double angle, double dt) {
     Vec2d gravity{0.0,-G};
     for (;pos[1] >= 0.0;) {
         trajectory.Append(pos);
-        vec = vec + gravity*dt;
-        pos = pos + vec*dt;
+        pos += vec * dt;
+        vec += gravity * dt;
     }
     return trajectory;
 }

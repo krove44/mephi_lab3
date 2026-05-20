@@ -22,6 +22,9 @@ static const sf::Color TEXT_SEC {130, 130, 145};
 static const sf::Color ACCENT   {29,  158, 117};
 static const sf::Color TRY_COL  {110, 110, 125, 110};
 
+
+//::CH
+
 struct Field {
     std::string label;
     std::string value;
@@ -47,6 +50,7 @@ struct CoordMapper {
 
 int main()
 {
+    //TODO: сделать класс в нем обявить окно и наследуясь вызывать его
     sf::RenderWindow window(
         sf::VideoMode({static_cast<unsigned int>(WIN_W), static_cast<unsigned int>(WIN_H)}),
         "Trajectory Gui",
@@ -57,7 +61,7 @@ int main()
     sf::Clock clock;
     float animT = 0.f;
     sf::Font font;
-    auto check = font.openFromFile("C:/Windows/Fonts/segoeui.ttf");
+    auto check = font.openFromFile("C:/Windows/Fonts/segoeui.ttf");//TODO:добавить шрифт в папку assets
 
 
     auto drawText = [&](const std::string& str, float x, float y, unsigned size = 14, sf::Color color = TEXT_PRI) {
@@ -67,7 +71,7 @@ int main()
         window.draw(t);
     };
 
-
+    //TODO:сделать структуру для координат 
     auto drawRect = [&](float x, float y, float w, float h, sf::Color fill, sf::Color outline = sf::Color::Transparent, float thickness = 0.f){
         sf::RectangleShape r({w, h});
         r.setPosition({x, y});
@@ -161,7 +165,7 @@ int main()
             }
 
             for (double v0 = vmin; v0 <= vmax; v0 += vstep) {
-                auto ang = findAngle(v0, x1, x2);
+                auto ang = findAngle(v0, {x1, x2});
                 double a = ang.has_value() ? ang.value() : PI / 4.0;
                 tries.Append(generateTrajectory(v0, a, dt));
  

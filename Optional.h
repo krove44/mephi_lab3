@@ -1,14 +1,33 @@
 #pragma once
-#include <stdexcept>
+#include <cstddef>
+#include "Exception/OptionalException.h"
+
 
 template<typename T>
 class Optional {
 private:
-    T    value_;
+    union {
+        T value_;
+        std::byte dummy_;
+    };
     bool hasValue_;
 public:
-    Optional() : hasValue_(false){}
-    Optional(T value) : value_(value), hasValue_(true) {}
+    Optional() : dummy_(), hasValue_(false){}
+    Optional(const T& value) : hasValue_(true){
+        new (&value_) T(value);
+    };
+    Optional(Optional&& other) : dummy_(), hasValue_(other.hasValue_) {
+        if (hasValue_) {
+            new (&value_) T(std::move(other.value_));
+            other.value_.~T();
+            other.hasValue_ = false;
+        }
+    }
+    ~Optional() {
+        if (hasValue_) {
+            value_.~T();
+        }
+    };
 
     bool has_value() {
         return hasValue_;
@@ -16,22 +35,12 @@ public:
 
     T value() {
         if (!hasValue_) {
-            throw std::runtime_error("Optional: значения нет!");
+            throw OptionalEmpthy("Optional: значения нет!");
         }
         return value_;
     }
 
-    T value_or(T fallback) {
-        if (hasValue_) {
-            return value_;
-        }
-        return fallback;
-    }
-
     T* operator->() { 
-        if (!hasValue_) {
-            throw std::runtime_error("Optional: значения нет!");
-        }
         return &value_;
     }
 

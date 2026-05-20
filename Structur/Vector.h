@@ -93,6 +93,11 @@ public:
         return new_vec;
     };
 
+    Vec& operator+=(const Vec& other) {
+        *this = *this + other;
+        return *this;
+    }
+
     T dot(const Vec& other) const {
         T result = {};
         for (size_t i = 0; i < data_.GetLenght(); ++i) {

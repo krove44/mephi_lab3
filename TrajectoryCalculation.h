@@ -20,9 +20,9 @@ struct TrajectoryResult {
 
 double computeRange(double v0, double angle);
 
-Optional<double> findAngle(double v0, double x1, double x2);
+Optional<double> findAngle(double v0, Vec2d);
 
-Optional<TrajectoryResult> solve(double x1, double x2, double v0_min, double v0_max, double v0_step);
+Optional<TrajectoryResult> solve(Vec2d vec, Vec2d speed, double v0_step);
 
 double minV0ForRange(double x);
 
