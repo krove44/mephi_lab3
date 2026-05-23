@@ -12,7 +12,7 @@ Vec2d rotation(double angle, Vec2d vec)  {
 double computeRange(double v0, double angle) {
     return (v0 * v0 * std::sin(2.0 * angle)) / G;
 }
-//TODO: передовать вектор
+
 Optional<double> findAngle(double v0, Vec2d vec) {
     double lo = 0.0;
     double hi = PI / 4.0;

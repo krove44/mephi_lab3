@@ -23,7 +23,8 @@ target_link_libraries(tests PRIVATE gtest gtest_main)
 include(GoogleTest)
 gtest_discover_tests(tests)
 
-set(SFML_DIR "${CMAKE_SOURCE_DIR}/SFML-3.1.0/lib/cmake/SFML")
+set(SFML_DIR "C:/msys64/mingw64/lib/cmake/SFML")
+
 find_package(SFML 3 REQUIRED COMPONENTS Graphics Window System)
 
 add_executable(new_main 
