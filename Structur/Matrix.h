@@ -3,6 +3,7 @@
 #include <initializer_list>
 #include <stdexcept>
 #include "Vector.h"
+#include "..\Exception\MatrixException.h"
 
 template <template <typename> class Container, number T, size_t Dim>
 requires vectorizable<Container<T>>
@@ -15,12 +16,12 @@ public:
 
     Matrix(std::initializer_list<std::initializer_list<T>> rows) {
         if(rows.size() != Dim){
-            throw std::invalid_argument("rows.size != Dim");
+            throw SizeMismatchException(rows.size(), Dim);
         }
 
         for (auto& row : rows) {
             if (row.size() != Dim){
-                throw std::invalid_argument("rows.size != Dim");
+                throw SizeMismatchException(rows.size(), Dim);
             }
             data_.Append(Vec<Container, T, Dim>(row));
         }
