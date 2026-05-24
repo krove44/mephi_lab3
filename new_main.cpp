@@ -13,7 +13,7 @@ int main() {
 
     sf::Clock clock;
     sf::Font  font;
-    font.openFromFile("C:/Windows/Fonts/segoeui.ttf");
+    font.openFromFile("assets/Roboto/Roboto-VariableFont_wdth,wght.ttf");
     Model model;
     RightPanel panel(window, font);
     LeftPanel scene(window, panel);

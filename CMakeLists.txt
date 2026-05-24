@@ -32,3 +32,9 @@ add_executable(new_main
     TrajectoryCalculation.cpp
     )
 target_link_libraries(new_main PRIVATE SFML::Graphics SFML::Window SFML::System)
+
+add_custom_command(TARGET new_main POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/assets"
+        "$<TARGET_FILE_DIR:new_main>/assets"
+)
