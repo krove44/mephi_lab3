@@ -13,6 +13,7 @@ int main() {
 
     sf::Clock clock;
     sf::Font font;
+    //авторские права по хорошему вставлять
     font.openFromFile("assets/Roboto/Roboto-VariableFont_wdth,wght.ttf");
     Model model;
     RightPanel panel(window, font);

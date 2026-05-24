@@ -1,6 +1,6 @@
 #include "TrajectoryCalculation.h"
 #include "Structur/Vector.h"
-
+//TODO: слишком умная функция разбить на несколько, подумать про namespace в матрице
 Vec2d rotation(double angle, Vec2d vec)  {
     double cos = std::cos(angle);
     double sin = std::sin(angle);

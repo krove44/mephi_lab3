@@ -2,46 +2,53 @@
 #include <cstddef>
 #include "Exception/OptionalException.h"
 
-
 template<typename T>
 class Optional {
 private:
-    union {
-        T value_;
-        std::byte dummy_;
-    };
+    alignas(T) std::byte storage_[sizeof(T)];
     bool hasValue_;
+
+    T* ptr() {
+        return reinterpret_cast<T*>(storage_);
+    }
+    
+    const T* ptr() const {
+        return reinterpret_cast<const T*>(storage_);
+    }
+
 public:
-    Optional() : dummy_(), hasValue_(false){}
-    Optional(const T& value) : hasValue_(true){
-        new (&value_) T(value);
-    };
-    Optional(Optional&& other) : dummy_(), hasValue_(other.hasValue_) {
+    Optional() : storage_(), hasValue_(false) {}
+
+    Optional(const T& value) : hasValue_(true) {
+        new (storage_) T(value);
+    }
+
+    Optional(Optional&& other) : hasValue_(other.hasValue_) {
         if (hasValue_) {
-            new (&value_) T(std::move(other.value_));
-            other.value_.~T();
+            new (storage_) T(std::move(*other.ptr()));
+            other.ptr()->~T();
             other.hasValue_ = false;
         }
     }
+
     ~Optional() {
         if (hasValue_) {
-            value_.~T();
+            ptr()->~T();
         }
-    };
+    }
 
-    bool has_value() {
+    bool has_value() const {
         return hasValue_;
     }
 
     T value() {
         if (!hasValue_) {
-            throw OptionalEmpthy("Optional: значения нет!");
+            throw OptionalEmpthy("Optional is Empthy");
         }
-        return value_;
+        return *ptr();
     }
 
-    T* operator->() { 
-        return &value_;
+    T* operator->() {
+        return ptr();
     }
-
 };

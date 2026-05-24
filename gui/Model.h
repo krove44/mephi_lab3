@@ -51,12 +51,13 @@ struct CoordMapper {
 
 };
 
-inline Field makeField(const char* label, const char* def, float& fy, float fw) {
+Field makeField(const char* label, const char* def, float& fy, float fw) {
     Field f{label, def, PAD, fy, fw};
     fy += 60.f;
     return f;
 }
-
+//TODO:единицы трансляции
+//TODO:как работает компилятор
 struct Model {
     ArraySequence<Field> fields;
     Button calcBtn;
@@ -88,8 +89,6 @@ struct Model {
     void runCalc() {
         tries.Clear();
         hasSolution = false;
-
-        try {
             double x1    = std::stod(fields[0].value);
             double x2    = std::stod(fields[1].value);
             double vmin  = std::stod(fields[2].value);
@@ -99,6 +98,7 @@ struct Model {
 
             if (x1 >= x2 || vmin >= vmax || vstep <= 0 || dt <= 0) {
                 statusMsg   = "Error: check parameters";
+                //TODO: отдельный класс под view
                 statusColor = sf::Color{220, 80, 80};
                 return;
             }
@@ -136,10 +136,6 @@ struct Model {
                 statusColor = sf::Color{220, 80, 80};
             }
 
-        } catch (...) {
-            statusMsg   = "Error: invalid input";
-            statusColor = sf::Color{220, 80, 80};
-        }
     }
 
     void update(float t) {

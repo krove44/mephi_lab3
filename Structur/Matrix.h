@@ -13,7 +13,7 @@ private:
 
 public:
     Matrix(const Matrix& other) : data_(other.data_) {};
-
+    //TODO: статический ассерт
     Matrix(std::initializer_list<std::initializer_list<T>> rows) {
         if(rows.size() != Dim){
             throw SizeMismatchException(rows.size(), Dim);

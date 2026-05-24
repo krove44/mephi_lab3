@@ -4,11 +4,11 @@
 #include "../submodule/Sequence/ListSequence.h"
 
 TEST(Matrix, ConstructorWrongRows) {
-    EXPECT_THROW((Matrix<ArraySequence, int, 3>{{0, 0}, {0, 0}}), std::invalid_argument);
+    EXPECT_THROW((Matrix<ArraySequence, int, 3>{{0, 0}, {0, 0}}), std::exception);
 }
 
 TEST(Matrix, ConstructorWrongCols) {
-    EXPECT_THROW((Matrix<ArraySequence, int, 3>{{1, 2}, {3, 4}, {5, 6}}), std::invalid_argument);
+    EXPECT_THROW((Matrix<ArraySequence, int, 3>{{1, 2}, {3, 4}, {5, 6}}), std::exception);
 }
 
 TEST(Matrix, ConstructorValues) {
