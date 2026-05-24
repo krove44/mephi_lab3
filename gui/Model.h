@@ -3,8 +3,8 @@
 #include <sstream>
 #include <iomanip>
 #include <SFML/Graphics.hpp>
-#include "submodule/Sequence/ArraySequence.h"
-#include "TrajectoryCalculation.h"
+#include "../submodule/Sequence/ArraySequence.h"
+#include "../TrajectoryCalculation.h"
 
 //Основное окно
 constexpr float WIN_W   = 1280.f;

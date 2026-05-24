@@ -1,8 +1,8 @@
 #include <SFML/Graphics.hpp>
-#include "Model.h"
-#include "RightPanel.h"
-#include "LeftPanel.h"
-#include "EventHandler.h"
+#include "gui/Model.h"
+#include "gui/RightPanel.h"
+#include "gui/LeftPanel.h"
+#include "gui/EventHandler.h"
 
 int main() {
     sf::RenderWindow window(
