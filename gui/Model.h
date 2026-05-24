@@ -45,7 +45,7 @@ struct CoordMapper {
 
     sf::Vector2f toScreen(float wx, float wy) const {
         float px = CX + (wx / xMax) * CW;
-        float py = CY + CH - (wy / yMax) * (CH - 20.f);
+        float py = (CY + CH) - (wy / yMax) * CH;
         return {px, py};
     }
 
@@ -113,6 +113,12 @@ struct Model {
                     result      = {v0, a, computeRange(v0, a)};
                     solution    = tries.GetLast();
                     animT       = 0.f;
+
+                    double maxY = 0;
+                    for (int i = 0; i < solution.GetLenght(); ++i)
+                    maxY = std::max(maxY, solution.Get(i)[1]);
+                    cm.xMax = (float)(result.range * 1.15f);
+                    cm.yMax = (float)(maxY > 0 ? maxY * 1.2 : 80);
 
                     std::ostringstream ss;
                     ss << std::fixed << std::setprecision(2)

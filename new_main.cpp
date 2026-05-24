@@ -12,7 +12,7 @@ int main() {
     window.setFramerateLimit(60);
 
     sf::Clock clock;
-    sf::Font  font;
+    sf::Font font;
     font.openFromFile("assets/Roboto/Roboto-VariableFont_wdth,wght.ttf");
     Model model;
     RightPanel panel(window, font);
