@@ -82,7 +82,7 @@ struct Model {
             makeField("v0 step (m/s):", "5", fy, fw),
             makeField("dt (s):", "0.01", fy, fw),
         };
-        calcBtn = {"Calculate", PAD, 375.f, fw, 36.f};
+        calcBtn = {"Calculate", PAD, fy + 50.f, fw, 36.f};
     }
 
     void runCalc() {
