@@ -4,7 +4,7 @@
 Vec2d rotation(double angle, Vec2d vec)  {
     double cos = std::cos(angle);
     double sin = std::sin(angle);
-    Matrix<ArraySequence, double, 2> rotate_matrix = {{cos, -sin}, {sin, cos}};
+    Matrix<ArraySequence, double, 2> rotate_matrix = {{{cos, -sin}, {sin, cos}}};
     return rotate_matrix*vec;
     }
 

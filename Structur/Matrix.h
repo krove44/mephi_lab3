@@ -3,7 +3,7 @@
 #include <initializer_list>
 #include <stdexcept>
 #include "Vector.h"
-#include "..\Exception\MatrixException.h"
+#include "array"
 
 template <template <typename> class Container, number T, size_t Dim>
 requires vectorizable<Container<T>>
@@ -13,17 +13,12 @@ private:
 
 public:
     Matrix(const Matrix& other) : data_(other.data_) {};
-    //TODO: статический ассерт
-    Matrix(std::initializer_list<std::initializer_list<T>> rows) {
-        if(rows.size() != Dim){
-            throw SizeMismatchException(rows.size(), Dim);
-        }
-
-        for (auto& row : rows) {
-            if (row.size() != Dim){
-                throw SizeMismatchException(rows.size(), Dim);
-            }
-            data_.Append(Vec<Container, T, Dim>(row));
+    template <size_t N, size_t M>
+    constexpr Matrix(const T (&rows)[N][M]) {
+        static_assert(N == Dim);
+        static_assert(N == M);
+        for (auto& row: rows) {
+            data_.Append(Vec<Container, T, Dim>(row)); 
         }
     }
 
