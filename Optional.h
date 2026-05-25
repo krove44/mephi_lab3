@@ -11,10 +11,6 @@ private:
     T* ptr() {
         return reinterpret_cast<T*>(storage_);
     }
-    
-    const T* ptr() const {
-        return reinterpret_cast<const T*>(storage_);
-    }
 
 public:
     Optional() : storage_(), hasValue_(false) {}
